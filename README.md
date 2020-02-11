@@ -13,6 +13,16 @@ Gitrob is a tool to help find potentially sensitive files pushed to public repos
 
     gitrob [options] target [target2] ... [targetN]
 
+
+## Examples
+Target repositories : 
+
+    gitrob -repo alvoras/gitrob,michenriksen/gitrob
+    
+Target users :
+
+    gitrob alvoras,michenriksen
+ 
 ### Options
 
 ```
@@ -30,6 +40,8 @@ Gitrob is a tool to help find potentially sensitive files pushed to public repos
     Don't add members to targets when processing organizations
 -port int
     Port to run web server on (default 9393)
+ -repo string
+    Repositories to scan for
 -save string
     Save session to file
 -silent
@@ -55,7 +67,6 @@ A session stored in a file can be loaded with the `-load` option:
 Gitrob will start its web interface and serve the results for analysis.
 
 ## Installation
-
 A [precompiled version is available](https://github.com/michenriksen/gitrob/releases) for each release, alternatively you can use the latest version of the source code from this repository in order to build your own binary.
 
 Make sure you have a correctly configured **Go >= 1.8** environment and that `$GOPATH/bin` is in your `$PATH`
@@ -63,6 +74,9 @@ Make sure you have a correctly configured **Go >= 1.8** environment and that `$G
     $ go get github.com/michenriksen/gitrob
 
 This command will download gitrob, install its dependencies, compile it and move the `gitrob` executable to `$GOPATH/bin`.
+
+### Forker note
+The forked precompiled version is available at [https://github.com/alvoras/gitrob/releases](https://github.com/alvoras/gitrob/releases)
 
 ### Github access token
 

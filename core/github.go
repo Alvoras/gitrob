@@ -2,6 +2,8 @@ package core
 
 import (
   "context"
+  "fmt"
+  "strings"
 
   "github.com/google/go-github/github"
 )
@@ -89,6 +91,45 @@ func GetRepositoriesFromOwner(login *string, client *github.Client) ([]*GithubRe
   }
 
   return allRepos, nil
+}
+
+func GetRepositoryFromPath(path string, client *github.Client) (*GithubRepository, error) {
+  pathChunks := strings.Split(path, "/")
+  loginVal := pathChunks[0]
+  repoName := pathChunks[1]
+  ctx := context.Background()
+  opt := &github.RepositoryListOptions{
+    Type: "sources",
+  }
+
+  for {
+    repos, resp, err := client.Repositories.List(ctx, loginVal, opt)
+    if err != nil {
+      return nil, err
+    }
+    for _, repo := range repos {
+      if !*repo.Fork && *repo.Name == repoName{
+        r := GithubRepository{
+          Owner:         repo.Owner.Login,
+          ID:            repo.ID,
+          Name:          repo.Name,
+          FullName:      repo.FullName,
+          CloneURL:      repo.CloneURL,
+          URL:           repo.HTMLURL,
+          DefaultBranch: repo.DefaultBranch,
+          Description:   repo.Description,
+          Homepage:      repo.Homepage,
+        }
+        return &r, nil
+      }
+    }
+    if resp.NextPage == 0 {
+      break
+    }
+    opt.Page = resp.NextPage
+  }
+
+  return nil, fmt.Errorf("repository not found")
 }
 
 func GetOrganizationMembers(login *string, client *github.Client) ([]*GithubOwner, error) {
